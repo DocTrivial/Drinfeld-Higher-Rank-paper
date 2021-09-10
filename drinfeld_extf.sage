@@ -290,6 +290,9 @@ def hankel_sol():
     vec = matrix(KE, rowdim, 1)
     basei = 0
     basej = 0
+    phit_arr = [1]
+    for i in range(col_blocks):
+        phit_arr.append(phit_arr[i]*phit)
     for b_i in range(row_blocks):
         basei = row_block_size*b_i
         for b_j in range(col_blocks):
@@ -300,7 +303,7 @@ def hankel_sol():
             for i in range(row_block_size):
                 for j in range(1, br + 1):
                     if (i == 0):
-                        matr[basei + i, basej + j - 1] = oper(-phit^(b_j), frob_iter(alpha[b_i], n*(j)))
+                        matr[basei + i, basej + j - 1] = oper(-phit_arr[b_j], frob_iter(alpha[b_i], n*(j)))
                     elif (j < br):
                         matr[basei + i, basej + j - 1] = matr[basei + i - 1, basej + j]
                     else:
