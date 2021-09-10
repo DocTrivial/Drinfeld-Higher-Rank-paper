@@ -511,7 +511,7 @@ If $\gcd(n,r) = 1$, the degree of the lead term of $\phi_x^u = C\tau^{ru} + \ldo
     \item Fix a random projection $\ell: K \to \F_q$ and apply it to the entries of $H, G$
     \item Solve the resulting $O(nr) \times nr$ system over $\F_q$.
 \end{enumerate}
-Constructing the Hankel system above involves computing $\phi_x^{u}\tau^{ni}(\alpha_j)$ for $O(nr^2)$ choices of $0 \leq u < n, 1 \leq i \leq r, 0 \leq j \leq r$. The applications of $\tau$ can be applied for $O(1)$ cost on the normal basis, so the total bit complexity is $O(n^2r^3\log q)$ for constructing the Hankel system. We may again apply the uniformly selected linear projection $\ell$ at an additional cost of $O(n^2r^3\log q)$. Constructing the normal basis and solving the resulting $nr \times nr$ Hankel system consisting of $n$ block columns and $r$ block rows can be done in at most $O(n^2r^2\log q)$
+Constructing the Hankel system above involves computing $\phi_x^{u}\tau^{ni}(\alpha_j)$ for $O(nr^2)$ choices of $0 \leq u < \frac{r-1}{r}n, 1 \leq i \leq r, 0 \leq j \leq r$. The applications of $\tau$ can be applied for $O(1)$ cost on the normal basis, so the total bit complexity is $O(n^2r^3\log q)$ for constructing the Hankel system. We may again apply the uniformly selected linear projection $\ell$ at an additional cost of $O(n^2r^3\log q)$. Constructing the normal basis and solving the resulting $nr \times nr$ Hankel system consisting of $n$ block columns and $r$ block rows can be done in at most $O(n^2r^2\log q)$
 
 
 
