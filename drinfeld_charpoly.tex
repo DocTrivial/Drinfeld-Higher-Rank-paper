@@ -216,13 +216,13 @@ A \emph{Drinfeld module} over $(\L, \gamma)$ is a ring homomorphism $\phi: \F_q[
     \hspace{5mm} \Delta_i \in \L
 \end{equation}
 
-The largest index $r$ such that $\Delta_r \neq 0$ is the \textit{rank} of the Drineld module. We shall specify a Drinfeld module over $\F_q[x]$ by its coefficients given in (\ref{definition}). The \textit{minimal polynomial} of a Drinfeld module is the monic polynomial of lowest degree $d \leq r$ $T^d + \sum_{i=0}^{d - 1} a_iT^i \in \F_q[x][T]$ such that:
+The largest index $r$ such that $\Delta_r \neq 0$ is the \textit{rank} of the Drineld module. We shall specify a Drinfeld module over $\F_q[x]$ by its coefficients given in (\ref{definition}). The \textit{minimal polynomial} of a Drinfeld module is the monic polynomial of lowest degree $d \leq r$, $T^d - \sum_{i=0}^{d - 1} a_iT^i \in \F_q[x][T]$ such that:
 
 \begin{equation}\label{characteristic}
-    \tau^{nd} + \phi_{a_{d-1}}\tau^{n(d-1)} + \ldots + \phi_{a_1} \tau^n + \phi_{a_0} = 0, \cite{GaPa18} 
+    \tau^{nd} - \phi_{a_{d-1}}\tau^{n(d-1)} - \ldots - \phi_{a_1} \tau^n - \phi_{a_0} = 0, \cite{GaPa18} 
 \end{equation}
 
-where $\deg a_i \leq \frac{(r - i)n}{r}$. We will be primarily concerned with algorithms computing the coefficients $\{ a_i \}_{i=0}^{r-1}$. An explicit formula to compute $a_0$ is given in \cite{GaPa18}:
+where $\deg a_i \leq \frac{(r - i)n}{r}$. A result due to \cite{GaraiPapikian} shows that $d = r$. We will be primarily concerned with algorithms computing the coefficients $\{ a_i \}_{i=0}^{r-1}$. An explicit formula to compute $a_0$ is given in \cite{GaPa18}:
 
 \begin{equation}\label{norm}
     a_0 = (-1)^{r + n(r+1)}N_{\F_{\mathfrak{p}}/\F_q}(\Delta_r)^{-1} \mathfrak{p}
@@ -285,7 +285,7 @@ here $\F_{q^2}$ is the unique quadratic extension of $\F$ contained in $\L$, and
 
 \subsection{Previous Work}
 
-The following approach is due to \cite{GaraiPapikian}. Rewrite the expression for the minimal polynomial as $f_i' + f_i = 0$ where
+The following approach is due to \cite{GaraiPapikian} and can be used when $\L = \F_{\frak{p}}$. Rewrite the expression for the minimal polynomial as $f_i' + f_i = 0$ where
 
 \[ f_i = \phi_{a_{r-i}}\tau^{n (r-i)} + \phi_{a_{r - i -1 }}\tau^{n (r-i-1)} + \ldots + \phi_{a_0} \]
 
@@ -399,57 +399,59 @@ The computationally intensive component is step (1), which can be completed usin
 
 Inspired by the Monte Carlo Algorithm given in $\cite{MuslehSchost}$, we can organize the characteristic equation into a Hankel system.
 
-\begin{equation*}
-\sum_{i=1}^{r - 1} \phi_{a_i}\tau^{ni} = \tau^{nr} - \phi_{a_0}
-\end{equation*}
-\begin{equation}\label{chareq}
-\sum_{i=1}^{r - 1} \sum_{j=0}^{n(r-i)/r}a_{i,j}\phi_{x}^j\tau^{ni} = \tau^{nr} - \phi_{a_0}
-\end{equation}
+\begin{align*}
+\sum_{i=1}^{r - 1} \phi_{a_i}\tau^{ni} = &  \tau^{nr} - \phi_{a_0}
+%\end{equation*}
+%\begin{equation}
+%\label{chareq}
+\\
+\sum_{i=1}^{r - 1} \sum_{j=0}^{n(r-i)/r}a_{i,j}\phi_{x}^j\tau^{ni} = & \tau^{nr} - \phi_{a_0}
+\end{align*}
 
 Consider the operator Hankel blocks
-\begin{equation*}
-H_{u,v} = \begin{bmatrix}
-\phi_x^u\tau^{n} & \phi_x^u\tau^{2n} & \ldots & \phi_x^u\tau^{n\lfloor r - (ur)/n \rfloor} \\
-\phi_x^u\tau^{2n} & \phi_x^u\tau^{3n} & \ldots & \phi_x^u\tau^{(1 +\lfloor r - (ur)/n \rfloor)n} \\ \vdots & \vdots & \ddots & \vdots \\ \phi_x^u\tau^{vn} & \phi_x^u\tau^{(1+v)n} & \ldots & \phi_x^u\tau^{(v + \lfloor r - (ur)/n \rfloor) n}
+\begin{align*}
+H_{u,v} = & \begin{bmatrix}
+\phi_x^u\tau^{n} & \phi_x^u\tau^{2n} & \ldots & \phi_x^u\tau^{n (r - 1 - \lfloor(ur/n) \rfloor)} \\
+\phi_x^u\tau^{2n} & \phi_x^u\tau^{3n} & \ldots & \phi_x^u\tau^{(1 + r - 1 - \lfloor(ur/n) \rfloor)n} \\ \vdots & \vdots & \ddots & \vdots \\ \phi_x^u\tau^{vn} & \phi_x^u\tau^{(1+v)n} & \ldots & \phi_x^u\tau^{(v +  r - 1 - \lfloor(ur/n) \rfloor) n}
 \end{bmatrix}
-\end{equation*}
-\begin{equation*}
-    G_{v} = \begin{bmatrix}
+\\
+%\end{equation*}
+%\begin{equation*}
+    G_{v} = &\begin{bmatrix}
     \tau^{nr} - \phi_{a_0} & \tau^{n(r+1)} - \phi_{a_0}\tau^n & \ldots \tau^{n(r+v -1)} - \phi_{a_0}\tau^{n(v-1)}
     \end{bmatrix}^T
-\end{equation*}
+\end{align*}
 
 Define
-\begin{equation*}
-H:= \begin{bmatrix}
-H_{0,v_1} & H_{1, v_1} & \ldots & H_{n\lfloor r/r-1 \rfloor, v_1} \\ \vdots & \vdots & \ddots & \vdots \\ H_{0,v_k} & H_{1, v_k} & \ldots & H_{n\lfloor r/r-1 \rfloor, v_k}
-\end{bmatrix}
-\end{equation*}
-
-We thus obtain the system
-
-\begin{equation}
-%\begin{bmatrix}
-%H_{0,v_1} & H_{1, v_1} & \ldots & H_{n\lfloor r/r-1 \rfloor, v_1} \\ \vdots & \vdots & \ddots & \vdots \\ H_{0,v_k} & H_{1, v_k} & \ldots & H_{n\lfloor r/r-1 \rfloor, v_k}
-%\end{bmatrix}
-H
-\begin{bmatrix}
-a_{1,0} \\ a_{2,0} \\ \vdots \\ a_{1,1} \\ a_{2,1} \\ \vdots \\ a_{1, n\lfloor (r-1)/r \rfloor}
-\end{bmatrix} = 
-\begin{bmatrix}
+\begin{align*}
+%\begin{equation*}
+H:= & \begin{bmatrix}
+H_{0,v_1} & H_{1, v_1} & \ldots & H_{\lfloor n (r- 1)/r \rfloor, v_1} \\ \vdots & \vdots & \ddots & \vdots \\ H_{0,v_k} & H_{1, v_k} & \ldots & H_{\lfloor n (r-1)/r \rfloor, v_k}
+\end{bmatrix}\\
+G:= & \begin{bmatrix}
 G_{v_1} \\ \vdots \\ G_{v_k}
 \end{bmatrix}
-\end{equation}
+%\end{equation*}
+\end{align*}
 
-We lift to an extension $K$ over $L$; goal is to choose a set of evaluation points $\alpha_1, \ldots, \alpha_k \in K$ such that
+We then obtain the system
+
+\begin{equation*}
+H
+\begin{bmatrix}
+a_{1,0} \\ a_{2,0} \\ \vdots \\ a_{1,1} \\ a_{2,1} \\ \vdots \\ a_{1, \lfloor n (r-1)/r \rfloor}
+\end{bmatrix} = G
+\end{equation*}
+
+Lifting to an extension $K$ over $L$, the goal is to choose a set of evaluation points $\alpha_1, \ldots, \alpha_k \in K$ such that
 
 \begin{equation*}
     H(\alpha_1, \ldots, \alpha_k) := \begin{bmatrix}
-H_{0,v_1}(\alpha_1) & H_{1, v_1}(\alpha_1) & \ldots & H_{n\lfloor (r-1)/r \rfloor, v_1}(\alpha_1) \\ \vdots & \vdots & \ddots & \vdots \\ H_{0,v_k}(\alpha_k) & H_{1, v_k}(\alpha_k) & \ldots & H_{n\lfloor (r-1)/r\rfloor, v_k}(\alpha_k)
+H_{0,v_1}(\alpha_1) & H_{1, v_1}(\alpha_1) & \ldots & H_{\lfloor n (r-1)/r \rfloor, v_1}(\alpha_1) \\ \vdots & \vdots & \ddots & \vdots \\ H_{0,v_k}(\alpha_k) & H_{1, v_k}(\alpha_k) & \ldots & H_{\lfloor n (r-1)/r\rfloor, v_k}(\alpha_k)
 \end{bmatrix}
 \end{equation*}
 
-is non-singular. Note that $H$ is an $nr \times (v_1 + \ldots + v_k) $ system, and we take $v_1 = v_2 = \ldots = v_k = n$, $k = r$, and $[K:L] = r$. So $[K:\F_q] = nr$, and observe that if the following two conditions are satisfied:
+is non-singular. Note that $H$ is an $ (v_1 + \ldots + v_k) \times \bigg( \sum_{i=1}^{n(r-1)/r} r - 1 - \lfloor(i r/n) \rfloor \bigg)$ system, and that the number of columns is a most $nr$. Let $v_1 = v_2 = \ldots = v_k = r$, $k = n$, and $[K:L] = r$. So $[K:\F_q] = nr$, and observe that if the following two conditions are satisfied:
 
 \begin{enumerate}
     \item The characters $\phi_x^{u}\tau^{ni}$ on $K$ are independent for $1 \leq i \leq r-1$ and $0 \leq u \leq  \frac{r-i}{r} n < n$ 
@@ -501,7 +503,15 @@ Observe now that (\ref{violation}) holds for any $\ell_1, \ldots, \ell_m $, viol
 
 If $\gcd(n,r) = 1$, the degree of the lead term of $\phi_x^u = C\tau^{ru} + \ldots$ has a unique residue modulo $n$ for distinct choices of $u$, and so independence of $\{ \phi_x^{u}\tau^{ni} \}_{0 \leq u \leq n(r-i)/r }^{1 \leq i < r}$ follows from independence of $id, \tau, \tau^2, \ldots, \tau^{nr-1}$. The values $\alpha_1, \ldots, \alpha_r$ can be constructed from a normal basis for $K/\F_q$ by selecting $\alpha_i = \alpha^{q^i}$ for $0 \leq i \leq r - 1$.
 
-\subsubsection{Complexity.} Constructing the Hankel system above involves computing $\phi_x^{u}\tau^{ni}(\alpha_j)$ for $O(nr^2)$ choices of $0 \leq u < n, 1 \leq i \leq r, 0 \leq j \leq r$. The applications of $\tau$ can be applied for $O(1)$ cost on the normal basis, so the total bit complexity is $O(n^2r^3\log q)$ for constructing the Hankel system. We may again apply a uniformly selected linear projection $\ell: K \to \F_q$ at an additional cost of $O(n^2r^3\log q)$. Constructing the normal basis and solving the resulting $nr \times nr$ Hankel system consisting of $n$ block columns and $r$ block rows can be done in at most $O(n^2r^2\log q)$
+\subsubsection{Complexity.} Summarizing the preceding results, we have the following procedure:
+
+\begin{enumerate}
+    \item Fix a degree $r$ extension $K$ of $L$ and a normal basis for $K$ over $\F_q$
+    \item Compute the Hankel Blocks $H_{i,r}(\alpha_j)$ as well as the right-hand blocks $G_r(\alpha_j)$
+    \item Fix a random projection $\ell: K \to \F_q$ and apply it to the entries of $H, G$
+    \item Solve the resulting $O(nr) \times nr$ system over $\F_q$.
+\end{enumerate}
+Constructing the Hankel system above involves computing $\phi_x^{u}\tau^{ni}(\alpha_j)$ for $O(nr^2)$ choices of $0 \leq u < n, 1 \leq i \leq r, 0 \leq j \leq r$. The applications of $\tau$ can be applied for $O(1)$ cost on the normal basis, so the total bit complexity is $O(n^2r^3\log q)$ for constructing the Hankel system. We may again apply the uniformly selected linear projection $\ell$ at an additional cost of $O(n^2r^3\log q)$. Constructing the normal basis and solving the resulting $nr \times nr$ Hankel system consisting of $n$ block columns and $r$ block rows can be done in at most $O(n^2r^2\log q)$
 
 
 
