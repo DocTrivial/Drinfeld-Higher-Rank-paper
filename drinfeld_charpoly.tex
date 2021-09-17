@@ -170,7 +170,7 @@
 
 Elliptic Modules, later \textit{Drinfeld Modules}, were originally introduced in ~\cite{Drinfeld74} as a theoretical tool for solving a special case of the Langlands Conjecture. Since then, the particularly close relationship between rank-two Drinfeld modules and elliptic curves has led to considerable literature exploring whether theoretical results characterizing elliptic curves have Drinfeld module analogies. Schoof's algorithm for point counting on Elliptic curves is one area of particular interest, and though a perfect analogy did not appear to be practical, a number of algorithms for computing the Frobenius trace of a rank-two Drinfeld module were presented in \cite{MuslehSchost}.
 
-In this paper, we attempt to extend these techniques to Drinfeld modules of rank $r > 2$. One of the most critical differences observed in the transition to Drinfeld modules of arbitrary rank is that it becomes much more difficult to provide theoretical guarantees that these algorithms return a correct result. Much of this work is therefore devoted to showing that under certain parameter conditions, we can expect these techniques to succeed with high probability.  
+In this paper, we attempt to extend these techniques to Drinfeld modules of rank $r > 2$. One of the most critical differences observed in the transition to Drinfeld modules of arbitrary rank is that it becomes much more difficult to provide theoretical guarantees that these algorithms return a correct result. Much of this work is therefore devoted to showing that under certain parameter conditions, we can expect these techniques to succeed with high probability. 
 
 \section{Preliminaries}
 
@@ -197,11 +197,11 @@ with $\pi^0$ denoting the identity mapping on $\L$.
 For all of our cost analysis, we will assume that all elementary operations on polynomials of degree at most $d$, which includes addition, multiplication, division and extended GCD, over $\F_q[x]$ can be completed in time $(d \log q)^{1 + o(1)}$ \cite{vonzurgathen_gerhard_2013}. We let $\omega$ denote an exponent such that any two $s\times s$ matrices over any ring can be multiplied with at most $O(s^{\omega})$ ring operations. 
 
 \subsubsection{Modular Composition} 
-Given $F,G,H \in \F_q[x]$, with $\deg H = d$ and $\deg F, \deg G \leq d$, the operation \textit{modular composition} computes $F(G) \mod H$. Let $\theta$ denote an exponent such that degree $d$ modular composition in $\F_q[x]$ can be done in $(d^{\theta} \log q)^{1 + o(1)}$ bit operations. The algorithm due to Kedlaya and Umans in \cite{kedlaya_umans} allows $\theta = 1 + \epsilon$ for any $\epsilon > 0$, but there do not appear to be any practical implementations of this algorithm to our knowledge.
+Given $F,G,H \in \F_q[x]$, with $\deg H = d$ and $\deg F, \deg G \leq d$, the operation \textit{modular composition} computes $F(G) \mod H$. Let $\theta$ denote an exponent such that degree $d$ modular composition in $\F_q[x]$ can be done in $(d^{\theta} \log q)^{1 + o(1)}$ bit operations. The algorithm due to Kedlaya and Umans in \cite{kedlaya_umans} allows $\theta = 1 + \epsilon$ for any $\epsilon > 0$, but there do not appear to be any practical implementations of this algorithm to our knowledge. Modular composition allows for computation of Frobenius powers $t^{q^i}$ for any $t \in \L$ via the composition $t(x^{q^i}) \mod H$ where $H$ is a degree $n$ polynomial such that $\L$ can be represented as the residues $\F_q[x]/H$, 
 
-\subsubsection{Skew-Polynomial Multiplication} 
+\subsubsection{Skew-Polynomial Multiplication and Division} 
 
-To our knowledge there currently exists two skew-polynomial multiplication algorithms either of which may be the most efficient depending on the parameter cases being dealt with and the details of the cost model involved. The algorithm given in \cite{PuchingerW15} can multiply two degree $d$ skew-polynomials using $(d^{(\omega + 1)/2}n^{\theta} \log q)^{1 + o(1)}$ bit operations
+To our knowledge there currently exists two skew-polynomial multiplication algorithms either of which may be the most efficient depending on the parameter cases being dealt with and the details of the cost model involved. The algorithm given in \cite{PuchingerW15} can multiply two degree $d$ skew-polynomials using $(d^{(\omega + 1)/2}n^{\theta} \log q)^{1 + o(1)}$ bit operations. A result due to Caruso and Le Borgne \cite{CaLe17} shows that up to logarithmic factors, left and right division of skew-polynomials belong to the same complexity class as multiplication.
 
 \subsection{Drinfeld Modules}
 
@@ -216,13 +216,13 @@ A \emph{Drinfeld module} over $(\L, \gamma)$ is a ring homomorphism $\phi: \F_q[
     \hspace{5mm} \Delta_i \in \L
 \end{equation}
 
-The largest index $r$ such that $\Delta_r \neq 0$ is the \textit{rank} of the Drineld module. We shall specify a Drinfeld module over $\F_q[x]$ by its coefficients given in (\ref{definition}). The \textit{minimal polynomial} of a Drinfeld module is the monic polynomial of lowest degree $d \leq r$, $T^d - \sum_{i=0}^{d - 1} a_iT^i \in \F_q[x][T]$ such that:
+The largest index $r$ such that $\Delta_r \neq 0$ is the \textit{rank} of the Drinfeld module. A Drinfeld module over $\F_q[x]$ may be specified using the coefficients of $\phi_x$ given in (\ref{definition}). The \textit{minimal polynomial} of the Frobenius element $\tau^n$ of a Drinfeld module is the monic polynomial of lowest degree $d \leq r$, $T^d - \sum_{i=0}^{d - 1} a_iT^i \in \F_q[x][T]$ such that:
 
 \begin{equation}\label{characteristic}
     \tau^{nd} - \phi_{a_{d-1}}\tau^{n(d-1)} - \ldots - \phi_{a_1} \tau^n - \phi_{a_0} = 0, \cite{GaPa18} 
 \end{equation}
 
-where $\deg a_i \leq \frac{(r - i)n}{r}$. A result due to \cite{GaraiPapikian} shows that $d = r$. We will be primarily concerned with algorithms computing the coefficients $\{ a_i \}_{i=0}^{r-1}$. An explicit formula to compute $a_0$ is given in \cite{GaPa18}:
+where $\deg a_i \leq \frac{(r - i)n}{r}$. We may henceforth refer to this as simply the minimal polynomial of the Drinfeld module. A result due to \cite{GaraiPapikian} shows that $d = r$. We will be primarily concerned with algorithms computing the coefficients $\{ a_i \}_{i=0}^{r-1}$. An explicit formula to compute $a_0$ is given in \cite{GaPa18}:
 
 \begin{equation}\label{norm}
     a_0 = (-1)^{r + n(r+1)}N_{\F_{\mathfrak{p}}/\F_q}(\Delta_r)^{-1} \mathfrak{p}
@@ -296,7 +296,14 @@ The term of skew degree $n(r - i + 1)$ in $f_i'$ is  $\gamma(a_{r-i+1}) \tau^{n(
 The bit-complexity of computing all of $\phi_x, \phi_{x^2}, \ldots, \phi_{x^n}$ is \newline
 $\Theta(r\log(r)n^3\log(q))$. Computing each $f_i$ is linear in the degree of the term being added, which is $O(rn)$, which is done for $O(r)$ iterations, so the overall cost is $O((r^2n + r\log(r)n^3)\log(q) )$.
 
+
 \subsection{Schoof-like Algorithms}
+
+Our main results for this section is the following theorem.
+
+\begin{theorem}\label{schooflike}
+Let $\phi$ be a rank $r$ Drinfeld module over $L/\F_q$. There is a Monte-Carlo algorithm computing the minimal polynomial of $\phi_x$ with bit complexity $r^{(\omega+3)/2}(n^2 \log q)^{1 + o(1)}$ and which returns a correct result when $q > 5nr^2$ with probability greater than $\frac{1}{2}$ .
+\end{theorem}
 
 Recall the \textit{minimal polynomial} of $\phi$ is the unique monic polynomial $T^r - a_{r-1}T^{r-1} - \ldots - a_1T - a_0$ of least degree such that:
 
@@ -390,14 +397,18 @@ The algorithm can be summarized with the following routine:
 \begin{enumerate}
     \item Compute $\tau^{ni} \mod \phi_{x-e}$ in the computational basis for $\lfloor\frac{r-1}{r}n \rfloor$ distinct $e \in \F_q$ and $1 \leq i \leq r$
     \item Solve the $r \times (r-1)$ system given in (\ref{system1}) for each choice of $e$. If $\textnormal{det} B_{\psi}^{n,r} \neq 0$, apply a uniformly random projection $\ell : \L \to \F_q$ to the system and solve the system over $\F_q$.
-    \item Interpolate $a_i$ using the evaluation points $a_i(e)$ computed in step (2). 
+    \item Interpolate $\{a_i\}_{i=1}^{r-1}$ using the $\lfloor\frac{r-1}{r}n \rfloor$ evaluation points $\{a_i(e)\}_{i=1}^{r-1}$ computed in step (2). 
 \end{enumerate}
 
-The computationally intensive component is step (1), which can be completed using the companion matrix method in conjunction with fast modular composition using $r^{\omega+1}(n^2 \log q)^{1 + o(1)}$ bit operations. Step (2) adds $r^{\omega}n\log q$ bit operations, and (3) is of negligible cost.
+The bottleneck for the algorithm is step (1). Algorithms for skew-polynomial multiplication can be leveraged to compute the entire collection of $\tau^{ni} \mod \phi_{x - e}$ in $r^{(\omega+3)/2}(n \log q)^{1 + o(1)}$ bit operations for a single $e$, with an overall contribution to the algorithm of $r^{(\omega+3)/2}(n^2 \log q)^{1 + o(1)}$. Step (2) adds $r^{\omega}n\log q$ bit operations, and (3) is of negligible cost. This completes the 
 
 \section{From Hankel Systems}
+Inspired by the Monte Carlo Algorithm given in $\cite{MuslehSchost}$, we will propose an additional algorithm which doesn't depend on the Zippel-Schwartz criteria and thus may be usable when the algorithm of theorem \ref{schooflike} fails, and with a similar complexity.
+\begin{theorem}\label{hankel}
+Let $\phi$ be a rank $r$ Drinfeld module over $L/\F_q$. There is a Monte-Carlo algorithm computing the minimal polynomial of $\phi_x$ with bit complexity $r^{3}n^2 \log q$ and which returns a correct result with probability greater than $\frac{1}{2}$ .
+\end{theorem}
 
-Inspired by the Monte Carlo Algorithm given in $\cite{MuslehSchost}$, we can organize the characteristic equation into a Hankel system.
+ We can organize the characteristic equation into a Hankel system.
 
 \begin{align*}
 \sum_{i=1}^{r - 1} \phi_{a_i}\tau^{ni} = &  \tau^{nr} - \phi_{a_0}
@@ -511,7 +522,7 @@ If $\gcd(n,r) = 1$, the degree of the lead term of $\phi_x^u = C\tau^{ru} + \ldo
     \item Fix a random projection $\ell: K \to \F_q$ and apply it to the entries of $H, G$
     \item Solve the resulting $O(nr) \times nr$ system over $\F_q$.
 \end{enumerate}
-Constructing the Hankel system above involves computing $\phi_x^{u}\tau^{ni}(\alpha_j)$ for $O(nr^2)$ choices of $0 \leq u < \frac{r-1}{r}n, 1 \leq i \leq r, 0 \leq j \leq r$. The applications of $\tau$ can be applied for $O(1)$ cost on the normal basis, so the total bit complexity is $O(n^2r^3\log q)$ for constructing the Hankel system. We may again apply the uniformly selected linear projection $\ell$ at an additional cost of $O(n^2r^3\log q)$. Constructing the normal basis and solving the resulting $nr \times nr$ Hankel system consisting of $n$ block columns and $r$ block rows can be done in at most $O(n^2r^2\log q)$
+Determining a normal basis of size $nr$ of $K/\F_q$ can be done sub-quadratically in the degree of the extension. Constructing the Hankel system above involves computing $\phi_x^{u}\tau^{ni}(\alpha_j)$ for $O(nr^2)$ choices of $0 \leq u < \frac{r-1}{r}n, 1 \leq i \leq r, 0 \leq j \leq r$. The applications of $\tau$ can be applied for $O(1)$ cost on the normal basis, while applications of $\phi_x$ take $O(nr \log q)$ bit operations. The total bit complexity for the entire procedure to compute the block Hankel system is $O(n^2r^3\log q)$. We may again apply the uniformly selected linear projection $\ell$ at an additional cost of $O(n^2r^3\log q)$. Constructing the normal basis and solving the resulting $nr \times nr$ Hankel system consisting of $n$ block columns and $r$ block rows can be done in at most $O(n^2r^2\log q)$
 
 
 
