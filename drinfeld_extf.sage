@@ -69,7 +69,11 @@ print("r: " + str(r))
 print("phi_t: " + str(phit))
 
 
-
+def frob_iter(elem, iters):
+    ret = elem
+    for i in range(iters):
+        ret = (ret)^q
+    return ret
 
 
 def pad(lst, size):
