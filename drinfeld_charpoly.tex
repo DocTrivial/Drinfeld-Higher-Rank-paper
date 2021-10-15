@@ -92,6 +92,7 @@
 \newcommand{\sring}{\L\{\tau\}}
 \newcommand{\hatr}{\hat{r}}
 \newcommand{\comm}{\mathbb{F}_q[\tau^n]}
+\newcommand{\sqdet}{\textnormal{sqdet }}
 \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 % \newcommand{\todo}{{\bf todo:}~}
@@ -193,6 +194,14 @@ There is a natural interpretation of skew-polynomials as elements of $\textnorma
 
 with $\pi^0$ denoting the identity mapping on $\L$.
 
+Let $[n] = \{1, \ldots, n \} $, and let $P_k$ acting on a set $s$ denote the set of subsets of $s$ of size $k$. If $s$ is an element of $P_k([n])$, and $M$ is an $n \times m$ matrix, let $M_s$ be the $(n - k) \times m$ matrix given by deleting rows corresponding to the indices in $s$. We define the square determinant $\sqdet M$ of an $n \times m$ matrix with $n \geq m$ to be:
+
+\begin{equation*}
+    \sqdet M = \sum_{s \in P_{n-m}([n])} (\det M_{s})^2
+\end{equation*}
+
+We note that $\sqdet M$ is non-zero if the overdetermined system given by $Mx = b$ either has a unique solution or is inconsistent for any choice of $b$.
+
 \subsection{Algorithmic Background}
 
 For all of our cost analysis, we will assume that all elementary operations on polynomials of degree at most $d$, which includes addition, multiplication, division and extended GCD, over $\F_q[x]$ can be completed in time $(d \log q)^{1 + o(1)}$ \cite{vonzurgathen_gerhard_2013}. We let $\omega$ denote an exponent such that any two $s\times s$ matrices over any ring can be multiplied with at most $O(s^{\omega})$ ring operations. 
@@ -231,7 +240,7 @@ where $\deg a_i \leq \frac{(r - i)n}{r}$. The characterization given in \cite{as
 
 \subsection{Revisiting the Rank-Two Case}
 
-The problem of computing characteristic polynomials of rank-2 Drinfeld modules was first extensively studied in \cite{gekeler}.  where two algorithms were proposed. The first is a generic algorithm that computes the minimal polynomial of any rank 2 Drinfeld module by using a recurrence to compute the coefficients of $\phi_{x^i}$ for $i \leq \frac{n}{2}$, which allows the computation of the coefficients of $a_1$ using (\ref{characteristic}), and takes $\tilde{O}(n^3)$ bit operations. The second algorithm uses an analogue of the Hasse invariant $H$ for Drinfeld modules defined as the coefficient of $\tau^m$ in $\phi(\frakp)$. When $\L = \F_{\frak{p}}$, $a_1$ can be written as
+The problem of computing characteristic polynomials of rank-2 Drinfeld modules was first extensively studied in \cite{gekeler}, where two algorithms were proposed. The first is a generic algorithm that computes the minimal polynomial of any rank 2 Drinfeld module by using a recurrence to compute the coefficients of $\phi_{x^i}$ for $i \leq \frac{n}{2}$, which allows the computation of the coefficients of $a_1$ using (\ref{characteristic}), and takes $\tilde{O}(n^3)$ bit operations. The second algorithm uses an analogue of the Hasse invariant $H$ for Drinfeld modules defined as the coefficient of $\tau^m$ in $\phi(\frakp)$. When $\L = \F_{\frak{p}}$, $a_1$ can be written as
 
 \begin{equation*}
     a_1 = (-1)^n N_{\L/\F_q}(\Delta_2)^{-1}H
@@ -324,10 +333,14 @@ $\L\{\tau \}/\phi_{x-e}$ is an $r$-dimensional vector space over $L$ spanned by 
 \begin{equation}\label{system1} \begin{bmatrix} \tau^{n(\hatr-1)} & \ldots & \tau^{n} \end{bmatrix} \begin{bmatrix} a_{\hatr-1}(e) \\ \vdots \\ a_1(e) \end{bmatrix} = \begin{bmatrix}  -a_0(e) \\ 0 \\ \vdots \\ 0  \end{bmatrix} + \tau^{n\hatr}  \mod \phi_{x-e}
 \end{equation}
 
-Let $B_{\phi}^{n,j} := \begin{bmatrix} \tau^{n(j-1)} & \ldots & \tau^{n} \end{bmatrix} \bmod \phi_{x-e}$ be the $r \times (j -1)$ system encoding the coefficients of $\tau^{ni}$ in the computational basis. The goal is to show the system given in $(\ref{system1})$ has a unique solution with high probability when $q \gg nr$ by applying the Schwartz-Zippel lemma to $\det [B_{\phi}^{n,\hatr}]_{\hatr-1}$ of the square $(\hatr - 1) \times (\hatr - 1)$ upper submatrix $[B_{\phi}^{n,\hatr}]_{\hatr-1}$ of $B_{\phi}^{n,\hatr}$. First, bound the degree of the determinant in terms of the normalized Drinfeld module coefficients $\alpha_{i,j}$ defined by the equation $ \Delta_i/\Delta_r = \sum_{j=0}^{n-1}\alpha_{i,j}x^j$ for $i > 0$ and $ (\gamma(x) - e)/\Delta_r = \sum_{j=0}^{n-1}\alpha_{0,j}x^j$
+Let $B_{\phi}^{n,j} := \begin{bmatrix} \tau^{n(j-1)} & \ldots & \tau^{n} \end{bmatrix} \bmod \phi_{x-e}$ be the $r \times (j -1)$ system encoding the coefficients of the $r$-dimensional vector $\tau^{ni} \mod \phi_{x -e}$ in the computational basis. The goal is to show the system given in $(\ref{system1})$ has a unique solution with high probability when $q \gg nr$ by applying the Schwartz-Zippel lemma to the polynomial in the coefficients of the Drinfeld module given by $\sqdet B_{\phi}^{n,\hatr}$, which is overdetermined by $ r - \hat{r} - 1$ rows.
+
+%$\sqdet [B_{\phi}^{n,\hatr}]_{\hatr-1}$ of the square $(\hatr - 1) \times (\hatr - 1)$ upper submatrix $[B_{\phi}^{n,\hatr}]_{\hatr-1}$ of $B_{\phi}^{n,\hatr}$. 
+
+First, bound the degree of the determinant in terms of the normalized Drinfeld module coefficients $\alpha_{i,j}$ defined by the equation $ \Delta_i/\Delta_r = \sum_{j=0}^{n-1}\alpha_{i,j}x^j$ for $i > 0$ and $ (\gamma(x) - e)/\Delta_r = \sum_{j=0}^{n-1}\alpha_{0,j}x^j$
 
 \begin{lemma}
-$\deg_{\alpha_{i,j}} \textnormal{det }  [B_{\phi}^{n,\hatr}]_{\hatr-1}\leq nr^2$.
+$\deg_{\alpha_{i,j}} \textnormal{det }  [B_{\phi}^{n,\hatr}]_{\hatr-1}\leq 2nr^2$.
 \end{lemma}
 
 \begin{proof}
@@ -341,13 +354,13 @@ M :=  \begin{bmatrix}\overline{\alpha}_{r-1} & I & 0 & \ldots & 0 \\ \overline{\
 \begin{bmatrix}\overline{\alpha}_{r-1} & I & 0 & \ldots & 0 \\ \overline{\alpha}_{r-2} & 0 & I & \ldots & 0 \\ \vdots & \vdots & \vdots & \ddots & \vdots \\ \overline{\alpha}_{0} & 0 & 0 & \ldots & I \end{bmatrix} \begin{bmatrix} \overline{\tau} & & \\ & \ddots & \\ & & \overline{\tau}\end{bmatrix} \begin{bmatrix} \overline{c}_{r-1} \\ \vdots \\ \overline{c}_{0} \end{bmatrix} = \begin{bmatrix} \overline{\alpha}_{r-1} \overline{\tau}(\overline{c}_{r-1}) + \overline{\tau}(\overline{c}_{r-2}) \\ \overline{\alpha}_{r-2} \overline{\tau} \overline{c}_{r-1} + \overline{\tau} \overline{c}_{r-3} \\ \vdots \\ \overline{\alpha}_{0} \overline{\tau}(\overline{c}_{r-1})  \end{bmatrix}
 \end{equation*}
 
-with each $\overline{c}_i \in \L$ being written as a size $n$ vector over $\mathbb{F}_q$. Then $\tau^{i} \mod \phi_{x-e}$ is given by 
+with each $\overline{c}_i \in \L$ being written as a size $n$ vector over $\mathbb{F}_q$. Then $\tau^{in} \mod \phi_{x-e}$ is given by 
 
 \begin{equation*}
-(MS)^{in-r} \begin{bmatrix} 1 \\ 0 \\ \vdots \\ 0 \end{bmatrix}.
+(MS)^{in-r} \begin{bmatrix} \overline{1} \\ 0 \\ \vdots \\ 0 \end{bmatrix}.
 \end{equation*}
 
-The entries of this expression have degree $in - r$ in the coefficients $\alpha_{i,j}$, and the total degree is $\sum_{i=1}^{r-1} (in - r) \leq nr^2$.
+The entries of this expression have degree $in - r$ in the coefficients $\alpha_{i,j}$, and the total degree of any term in the square determinant is $2\sum_{i=1}^{r-1} (in - r) \leq 2nr^2$.
 
 \end{proof}
 
@@ -356,7 +369,7 @@ If $\textnormal{det} [B_{\psi}^{n,r}]_{r-1} \neq 0 $, then for generic choices o
 % $\{\alpha_{i,j}\}_{1 \leq i \leq r-1}^{0 \leq j \leq n-1}$, the Schwartz-Zippel lemma implies
 
 \begin{equation*}
-    \Pr\Big[\textnormal{det} \begin{bmatrix} \tau^{n(r-1)} & \ldots & \tau^{n} \end{bmatrix}_{r-1} = 0\Big] \leq \frac{nr^2}{q}.
+    \Pr\Big[\textnormal{det} \begin{bmatrix} \tau^{n(r-1)} & \ldots & \tau^{n} \end{bmatrix}_{r-1} = 0\Big] \leq \frac{2nr^2}{q}.
 \end{equation*}
 
 We now aim to classify pairs of parameters $n,r$ for which there exists at least one choice of modulus $\psi \in \sring$ that guarantees a non-zero determinant. 
