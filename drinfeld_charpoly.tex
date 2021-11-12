@@ -340,18 +340,18 @@ Let $ B(\psi) = \begin{bmatrix} \tau^{n(\hatr-1)} & \ldots & \tau^{n} \end{bmatr
 
 %Let $ \Delta_i = \sum_{j=0}^{n-1}\alpha_{i,j}x^j$ for $i > 0$ and $ (\gamma(x) - e) = \sum_{j=0}^{n-1}\alpha_{0,j}x^j$. The goal of the next lemma is to bound the degree 
 
-\begin{lemma}
-Suppose $Cn^2r < q$ for a constant $C>2$, and suppose $m$ is chosen generically. Further suppose that there exists at least one skew-polynomial modulus $\psi$ of skew-degree $r$ such that the system in (\ref{system1}) is uniquely solvable. Then for generic choices of Drinfeld coefficients $\Delta_i$ and evaluation point $e$, the system given in $(\ref{system1})$ is uniquely solvable.
+\begin{lemma}\label{detdeg}
+Suppose $Cn^2r < q$ for a constant $C>2$. Further suppose that there exists at least one skew-polynomial modulus $\psi$ of skew-degree $r$ such that the system in (\ref{system1}) is uniquely solvable. Then for generic choices of Drinfeld coefficients $\Delta_i$ and evaluation point $e$, the system given in $(\ref{system1})$ is uniquely solvable.
 \end{lemma}
 
 \begin{proof}
-Let $\Delta_0 = x - e$; if $m$ is chosen generically then $\hatr = r$, and for $n,r \geq 3$ we can set $\mu = n(\hatr - 1)$, $\reduc = \mu - r$, $\omega = \mu - n > 0$. We can characterize the linear independence of the set $\{\tau^{ni} \}_{i =1}^{\hatr}$ as follows: suppose to the contrary that
+We consider general skew-polynomial moduli $\psi = \sum_{i=0}^{r} \Delta_i \tau^i$ for equation $(\ref{system1})$ rather than the specific case of $\Delta_0 = x - e$. Generically, $\hatr = r$, and for $n,r \geq 3$ we can set $\mu = n(\hatr - 1)$, $\reduc = \mu - r$, $\omega = \mu - n > 0$. We can characterize the linear independence of the set $\{\tau^{ni} \}_{i =1}^{\hatr}$ as follows: suppose to the contrary that
 
 \begin{equation}\label{mult}
     \sum_{i=1}^{\hatr - 1} \beta_i \tau^{ni} = P \phi_{x - e}
 \end{equation}
 
-with $P = \sum_{i= n}^{\reduc} p_ix^i \neq 0$. The choice of $P$ is constrained by the requirement that the coefficient of $\tau^{j}$ in the product is 0 if $n$ doesn't divide $j$.  The linear system representing the product $P\phi_{x-e}$ can be encoded as an $ (\omega + 1) \times (\omega - r + 1)$ matrix $M$ over $\L$
+with $P = \sum_{i= n}^{\reduc} p_ix^i \neq 0$. The choice of $P$ is constrained by the requirement that the coefficient of $\tau^{j}$ in the product is 0 if $n$ doesn't divide $j$. The linear system representing the product $P\phi_{x-e}$ can be encoded as an $ (\omega + 1) \times (\omega - r + 1)$ matrix $M$ over $\L$
 
 \begin{equation}
     \label{productsystem}
@@ -375,7 +375,29 @@ with $P = \sum_{i= n}^{\reduc} p_ix^i \neq 0$. The choice of $P$ is constrained 
     \end{bmatrix}
 \end{equation}
 
-Deleting $\hatr - 1$ rows corresponding to the free parameters $\beta_i$ leaves the above as a well determined $ (\omega - \hatr + 2) \times (\omega - r + 1)$ linear system. Deleting an additional $r - \hatr + 1$ rows and showing that for generic choices of Drinfeld module parameters the determinant of the resulting square matrix is non-zero is sufficient to establish $P = 0$. To that end, we ``vectorize" equation $(\ref{productsystem})$: elements $a \in \L$ can be represented by a length $n$ vector $\hat{a}$ with entries in $\F_q$ or by their $n\times n$ multiplication operator $\overline{a}$. Moreover, let $\overline{\sigma}$ denote the $n\times n$ matrix of the Frobenius acting on vectors $\hat{a}$. This allows a rewriting of the truncated system $\overline{M}$
+Deleting $\hatr - 1$ rows corresponding to the free parameters $\beta_i$ leaves the above as a well determined $ (\omega - \hatr + 2) \times (\omega - r + 1)$ linear system. 
+
+\begin{equation}
+    \label{reduced}
+    \begin{bmatrix}
+    \Delta_{r - 1}^{q^{\reduc}} & \Delta_{r}^{q^{\reduc - 1}} & 0 & \ldots & 0 & \ldots & 0 \\
+    \vdots & \vdots & \vdots & \ddots & \vdots & \ddots & \vdots \\
+    \Delta_{0}^{q^{\reduc}} & \Delta_{1}^{q^{\reduc - 1}} & \Delta_{2}^{q^{\reduc - 2}} & \ldots & \Delta_{r}^{q^{\reduc - r}} & \ldots & 0 \\
+    0 & \Delta_{0}^{q^{\reduc - 1}} & \Delta_{1}^{q^{\reduc - 2}} & \ldots & \Delta_{r-1}^{q^{\lambda - r}} & \ldots & 0 \\
+    \vdots & \vdots & \vdots & \ddots & \vdots & \ddots & \vdots \\
+    
+    
+    \end{bmatrix}
+    \begin{bmatrix}
+    p_{\reduc} \\ p_{\reduc - 1} \\ \vdots \\ p_{n}
+    \end{bmatrix}
+    = 
+    \begin{bmatrix}
+    0 \\ 0 \\ \vdots \\ 0 \\ 0
+    \end{bmatrix}
+\end{equation}
+
+Deleting an additional $r - \hatr + 1$ rows, chosen such that the resulting system derived from the modulus $\psi$ is invertible, and showing that for generic choices of Drinfeld module parameters the determinant of this resulting square matrix is non-zero is sufficient to establish $P = 0$. To that end, we ``vectorize" equation $(\ref{productsystem})$: elements $a \in \L$ can be represented by a length $n$ vector $\hat{a}$ with entries in $\F_q$ or by their $n\times n$ multiplication operator $\overline{a}$. Moreover, let $\overline{\sigma}$ denote the $n\times n$ matrix of the Frobenius acting on vectors $\hat{a}$. This allows a rewriting of the truncated system $\overline{M}$
 
 \begin{equation}
     \label{vectorsystem}
@@ -431,7 +453,7 @@ This system is parametrized by the $\F_q$ coefficients of $\Delta_i = \sum_{j = 
 
 The remainder of the proof of theorem 1 is classifying pairs of parameters $n,r$ for which there exists at least one choice of modulus $\psi \in \sring$ that guarantees unique solvability of $B(\psi)$
 
-\begin{prop}
+\begin{prop}\label{coprime}
 Suppose $\gcd(n,r) = 1$. There exists a Drinfeld module $\phi_x$ such that $ B(\phi_x)$ is uniquely solvable.  %e $\psi = \tau^n - 1$.
 \end{prop}
 \begin{proof}
@@ -440,7 +462,7 @@ Let $\phi_x = \tau^n - 1$. For any $e \neq 1$, $\tau^{ni} = (e + 1)^{\lfloor ni/
 
 
 
-\begin{prop}
+\begin{prop}\label{rank3}
 If $r = 3$, then for any $n$ there exists a skew-polynomial $\psi \in \L\{\tau\}$ such that $B(\psi)$ is uniquely solvable.
 \end{prop}
 \begin{proof}
@@ -462,6 +484,20 @@ For details on the construction of the map and the proof of item (4) we refer to
 The following observation shows that we may always find an irreducible degree 3 skew-polynomial in $\L\{\tau\}$. If there are none, then the mapping of triples $(\alpha, \beta, \gamma) \to (a, b, c)$ from $\L^3$ implied by $(\tau^2 + \alpha \tau + \beta)(\tau + \gamma) = \tau^2 + a \tau^2 + b\tau + c$ must be bijective. However both $(3, 2, 1)$ and $(2, 1, 2)$ map to $(4, 5, 2)$ and that this holds in any characteristic.  If we choose $\psi$ to be any degree 3 skew-polynomial irreducible in $\L\{\tau \}$, which must exist if $\L$ is finite, item (4) implies $\cN(\psi)$ is an irreducible central skew-polynomial dividing $(\tau^n - \lambda)^n$ and so $\cN(\psi) = \tau^n - \lambda$. But we must then have $n^2 = \deg \cN(D) + \deg \cN(\psi) \leq (n-3)n + n = n^2 - 2n < n^2$, giving a contradiction.
 
 \end{proof}
+
+\subsection{Limitations}
+
+One of the clearest limitations of this approach is the large base field requirement $q > Cn^2 r$. Unlike the case $r = 2$, working with arbitrary degree irreducibles in $\F_q[x]$ in place of degree 1 polynomials does not appear to repair the issues discussed in lemma (\ref{detdeg}).
+
+Lemma (\ref{detdeg}) also appears limited to only the parameter cases given in propositions (\ref{coprime}) and (\ref{rank3}). As will be seen in the following example, there exist parameter choices for $n, r,$ and Drinfeld module $\phi_x$ outside these cases where the algorithm will never work.
+
+\begin{example}\label{examplefail}
+Let $n = 3$, $r =3$, $\phi_x = \tau^3 + x$. For $(\ref{system1})$ to be uniquely solvable for some $e$, whenever $\alpha_1 \tau^3 + \alpha_2 \tau^6 = P (\tau^3 + x - e)$ we must have $P = 0$. However for any $e$ setting $\alpha_1 = 1$, $\alpha_2 = x - e $ has the non-zero solution $P = \tau^3$.  
+\end{example}
+
+It is possible to detect failure cases such as those in the preceding example by checking dimensionality of the kernel of the linear system in $(\ref{reduced})$.  
+
+
 
 \subsubsection{Complexity.}
 
@@ -613,7 +649,12 @@ If $\gcd(n,r) = 1$, the degree of the lead term of $\phi_x^u = C\tau^{ru} + \ldo
     \item Fix a random projection $\ell: K \to \F_q$ and apply it to the entries of $H, G$
     \item Solve the resulting $O(nr) \times nr$ system over $\F_q$.
 \end{enumerate}
-Determining a normal basis of size $nr$ of $K/\F_q$ can be done sub-quadratically in the degree of the extension. Constructing the Hankel system above involves computing $\phi_x^{u}\tau^{ni}(\alpha_j)$ for $O(nr^2)$ choices of $0 \leq u < \frac{r-1}{r}n, 1 \leq i \leq r, 0 \leq j \leq r$. The applications of $\tau$ can be applied for $O(1)$ cost on the normal basis, while applications of $\phi_x$ take $O(nr \log q)$ bit operations. The total bit complexity for the entire procedure to compute the block Hankel system is $O(n^2r^3\log q)$. We may again apply the uniformly selected linear projection $\ell$ at an additional cost of $O(n^2r^3\log q)$. Constructing the normal basis and solving the resulting $nr \times nr$ Hankel system consisting of $n$ block columns and $r$ block rows can be done in at most $O(n^2r^2\log q)$
+Determining a normal basis of size $nr$ of $K/\F_q$ can be done sub-quadratically in the degree of the extension. Constructing the Hankel system above involves computing $\phi_x^{u}\tau^{ni}(\alpha_j)$ for $O(nr^2)$ choices of $0 \leq u < \frac{r-1}{r}n, 1 \leq i \leq r, 0 \leq j \leq r$. The applications of $\tau$ can be applied for $O(1)$ cost on the normal basis, while applications of $\phi_x$ take $O(nr \log q)$ bit operations. The total bit complexity for the entire procedure to compute the block Hankel system is $O(n^2r^3\log q)$. We may again apply the uniformly selected linear projection $\ell$ at an additional cost of $O(n^2r^3\log q)$. Constructing the normal basis and solving the resulting $nr \times nr$ Hankel system consisting of $n$ block columns and $r$ block rows can be done in at most $O(n^2r^2\log q)$.
+
+\subsection{Comparison and Limitations}
+
+Unlike in the Schoof-like case, there is no dependence on the genericity of the choice of Drinfeld module; the algorithm only fails to return a result when a poor choice of projection is made. For cases other than $\gcd(n,r) = 1$, lemma (\ref{charindlem}) can be applied by directly by testing the linear independence of characters $\{ \phi_x^{u}\tau^{ni} \}_{0 \leq u \leq n(r-i)/r }^{1 \leq i < r}$, which can be done probabilistically using polynomial identity testing. 
+
 
 
 
