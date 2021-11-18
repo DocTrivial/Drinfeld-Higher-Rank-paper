@@ -46,18 +46,27 @@ rand_elem = ((8*t^4 + 3*t^3 + 9*t^2 + 8*t + 5)*s + 10*t^4 + 2*t^3 + 2*t^2 + 4*t 
 
 KE = K.extension(rand_elem)
 
-
-del3 = 1
-del2 = t +5*t^5 + s
-del1 = t^2 + 1 + s + t^3
-del0 = t
-
 #rank
-r = 3
+r = 5
 xx = L.gen()
+#print("h3")
+drin = [K(0) for i in range(r + 1)]
+#print("h2")
 
+drin[5] = 1
+drin[4] = t + 2*t^2 - s
+drin[3] = 1
+drin[2] = t +5*t^5 + s
+drin[1] = t^2 + 1 + s + t^3
+drin[0] = t
 
-phit = del3*(xx)^3 + del2*(xx)^2 + del1*(xx) + del0
+#print("h1")
+
+phit = L(0)
+for i, coeff in enumerate(drin):
+    phit += coeff * (xx)^i
+
+#phit = del3*(xx)^3 + del2*(xx)^2 + del1*(xx) + del0
 
 print("parameters")
 print("characteristic: " + str(p))
@@ -339,51 +348,42 @@ def garai():
 e = 1
 gamma = del0 - e
 
-points1 = []
-points2 = []
-
+points = [ [] for i in range(r - 1) ]
 
 
 for i in range(p):
     e = i
-    alph = xx^n % (phit - e)
-    beta = xx^(2*n) % (phit - e)
-    sigmo = xx^(3*n) % (phit - e)
-    a_coeff = alph.list()
-    b_coeff = beta.list()
-    s_coeff = sigmo.list()
-    alpha = [0 for i in range(3)]
-    beta = [0 for i in range(3)]
-    sigmar = [0 for i in range(3)]
-    for i in range(len(a_coeff)):
-        alpha[i] = a_coeff[i]
-    for i in range(len(b_coeff)):
-        beta[i] = b_coeff[i]
-    for i in range(len(s_coeff)):
-        sigmar[i] = s_coeff[i]
-    sol_mat = matrix(K,2,2)
-
-    ker = vector([-sigmar[2],-sigmar[1] ])
-
-    sol_mat[0,0] = beta[2]
-    sol_mat[1,0] = beta[1]
-    sol_mat[0,1] = alpha[2]
-    sol_mat[1,1] = alpha[1]
+    modbasis = []
+    for i in range(1, r+1):
+        modbasis.append((xx^(i*n) % (phit - e)).list())
+    # pad coefficient list with 0
+    for i in range(r):
+        clen = len(modbasis[i])
+        if clen < r:
+            for j in range(clen, r):
+                modbasis[i].append(0)
+    sol_mat = matrix(K, r - 1, r -1)
+    ker = vector([-modbasis[r-1][i] for i in range(r - 1, 0, -1) ])
+    for i in range(r-1):
+        for j in range(r-1):
+            sol_mat[j, r - 2 - i] = modbasis[i][r - 1 - j]
 
     sol = sol_mat.solve_right(ker)
 
-    points1.append((e, sol[0]))
-    points2.append((e, sol[1]))
+    for i in range(r-1):
+        points[i].append((e, sol[i]))
 
 RR = PolynomialRing(K, 't')
 print("testing Schoof-like algorithm")
-f1 = RR.lagrange_polynomial(points1)
-f2 = RR.lagrange_polynomial(points2)
-#print("new")
-print(f2)
-print(f1)
+f = []
+for i in range(r-1):
+    f.append(RR.lagrange_polynomial(points[i]))
+print(f)
 
-res = xx^(3*n) + phimap2(f1)*(xx^(2*n)) + phimap2(f2)*(xx^n) - phimap2(ip^d)
+res = xx^(r*n) - phimap2(ip^d)
+for i in range(1, r):
+    res += phimap2(f[i-1]) * (xx^((r-i)*n))
+
 print("Verification of schoof-like (this must be 0): " + str(res))
 
 
@@ -393,65 +393,9 @@ print("garai")
 
 print("hankel")
 print(hankel_sol())
-#
-# # USE THIS FOR HASSE_WITT STUFF
-#
-# def hasse():
-#     phi_p = phimap(ip)
-#     coeff = phi_p.list()
-#     hasse_inv = matrix(K, r, r)
-#     for i in range(r):
-#         for j in range(r):
-#             hasse_inv[i, j] = coeff[m*(i) +j]
-#     return hasse_inv
-#
-# def hasse2():
-#     phi_p = (phimap(ip))
-#     coeff = phi_p.list()
-#     print("full coeffs:" )
-#     print(coeff)
-#     hasse_inv = matrix(K, r- 1, r- 1)
-#     for i in range(r-1):
-#         for j in range(r - 1):
-#             hasse_inv[i, j] = coeff[m*(i + 1) - j]
-#     return hasse_inv
-#
-# hasse_witt = hasse2()
-# print(hasse_witt)
-# print(phimap(ip))
-# print("poly what")
-# print((7*t^4 + 4*t^3 + 10*t^2 + 5*t + 5)/(10*t+2))
-#
-# p0 = phimap(ip)
-# p1 = hasse_witt[1, 0]
-# print("p1: " + str(p1))
-# p2 = hasse_witt[1, 0]
-# #p2 = 1
-# print("p2: " + str(p2))
 
 
 
 
 QQ.<u> = A[]
 
-# for when hasse used + 1 instead of - 1
-#test1 = u^4 + (2*t^4 + 8*t^3 + 2*t^2 + 8)*u^3 + (2*t^3 + 7*t^2 + 10*t +2)*u^2 - ip
-#test2 = u^3 + (6*t + 10)*u^2 + (6*t^3 + 2*t^2 + 2*t + 6)*u - ip
-#test1 = u^4 + (2*t^4 + 3*t^3 + t^2 + t + 2)*u^3 + (4*t^3 + 6*t^2 + 4*t +4)*u^2 - ip
-#test1 = u^4 + (0)*u^3 + (5*t^3 + 9*t^2 + 9*t +5)*u^2 - ip
-# test1 = u^4 + (5*t^3 + 9*t^2 + 9*t + 5)*u^3 + (0)*u^2 - ip
-# test2 = u^3 + (6*t + 10)*u^2 + (6*t^3 + 2*t^2 + 2*t + 6)*u - ip
-#
-# resr = test1 // test2
-#
-# #test3 = (u + 2*t^4 + 8*t^3 + 2*t^2+5*t + 9)*test2
-# test3 = (u + 5*t^3 + 9*t^2 + 3*t + 6)*test2
-# #test3 = (u + 5*t + 1)*test2
-# print("test3: " + str(test3))
-#
-#
-# print("test1: " + str(test1))
-# print("test2: " + str(test2))
-# print("divs: " + str(resr))
-# print(test1 - test3)
-#
