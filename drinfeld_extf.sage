@@ -351,7 +351,7 @@ gamma = del0 - e
 points = [ [] for i in range(r - 1) ]
 
 
-for i in range(p):
+for i in range(n):
     e = i
     modbasis = []
     for i in range(1, r+1):
