@@ -10,6 +10,8 @@
 \usepackage{amsfonts}
 \usepackage{amsmath}
 \usepackage{amsthm}
+\usepackage{algorithm}
+%\usepackage{algpseudocode}
 \usepackage{bm}
 \usepackage{etex}
 \usepackage{color}
@@ -499,16 +501,19 @@ It is possible to detect failure cases such as those in the preceding example by
 
 
 
-\subsubsection{Complexity.}
+\subsection{Complexity.}
 
 The algorithm can be summarized with the following routine:
 
 %\textit{Subroutine 1}
+\begin{algorithm}[H]\label{schoof}
+\caption{Pseudocode for Schoof-like algorithm}
 \begin{enumerate}
     \item Compute $\tau^{ni} \mod \phi_{x-e}$ in the computational basis for $\lfloor\frac{r-1}{r}n \rfloor$ distinct $e \in \F_q$ and $1 \leq i \leq r$
     \item Solve the $r \times (\hatr-1)$ system given in (\ref{system1}) for each choice of $e$. If the system $B(\phi_{x-e})$ is uniquely solvable, apply a uniformly random projection $\ell : \L \to \F_q$ to the system and solve the system over $\F_q$.
     \item Interpolate $\{a_i\}_{i=1}^{\hatr-1}$ using the $\lfloor\frac{r-1}{r}n \rfloor$ evaluation points $\{a_i(e)\}_{i=1}^{r-1}$ computed in step (2). 
-\end{enumerate}
+    \end{enumerate}
+\end{algorithm}
 
 The bottleneck of subroutine 1 is step (1). Algorithms for skew-polynomial multiplication can be leveraged to compute the entire collection of $\tau^{ni} \mod \phi_{x - e}$ in $r^{(\omega+3)/2}(n \log q)^{1 + o(1)}$ bit operations for a single $e$, with an overall contribution to the algorithm of $r^{(\omega+3)/2}(n^2 \log q)^{1 + o(1)}$. Step (2) adds $r^{\omega}n\log q$ bit operations, and (3) is of negligible cost. 
 
@@ -641,7 +646,10 @@ Observe now that (\ref{violation}) holds for any $\ell_1, \ldots, \ell_m $, viol
 
 If $\gcd(n,r) = 1$, the degree of the lead term of $\phi_x^u = C\tau^{ru} + \ldots$ has a unique residue modulo $n$ for distinct choices of $u$, and so independence of $\{ \phi_x^{u}\tau^{ni} \}_{0 \leq u \leq n(r-i)/r }^{1 \leq i < r}$ follows from independence of $id, \tau, \tau^2, \ldots, \tau^{nr-1}$. The values $\alpha_1, \ldots, \alpha_r$ can be constructed from a normal basis for $K/\F_q$ by selecting $\alpha_i = \alpha^{q^i}$ for $0 \leq i \leq r - 1$.
 
-\subsubsection{Complexity.} Summarizing the preceding results, we have the following procedure:
+\subsection{Complexity.} Summarizing the preceding results, we have the following procedure:
+
+\begin{algorithm}[H]\label{hankel}
+\caption{Computing the Minimal Polynomial via a Hankel System }
 
 \begin{enumerate}
     \item Fix a degree $r$ extension $K$ of $L$ and a normal basis for $K$ over $\F_q$
@@ -649,11 +657,50 @@ If $\gcd(n,r) = 1$, the degree of the lead term of $\phi_x^u = C\tau^{ru} + \ldo
     \item Fix a random projection $\ell: K \to \F_q$ and apply it to the entries of $H, G$
     \item Solve the resulting $O(nr) \times nr$ system over $\F_q$.
 \end{enumerate}
+\end{algorithm}
 Determining a normal basis of size $nr$ of $K/\F_q$ can be done sub-quadratically in the degree of the extension. Constructing the Hankel system above involves computing $\phi_x^{u}\tau^{ni}(\alpha_j)$ for $O(nr^2)$ choices of $0 \leq u < \frac{r-1}{r}n, 1 \leq i \leq r, 0 \leq j \leq r$. The applications of $\tau$ can be applied for $O(1)$ cost on the normal basis, while applications of $\phi_x$ take $O(nr \log q)$ bit operations. The total bit complexity for the entire procedure to compute the block Hankel system is $O(n^2r^3\log q)$. We may again apply the uniformly selected linear projection $\ell$ at an additional cost of $O(n^2r^3\log q)$. Constructing the normal basis and solving the resulting $nr \times nr$ Hankel system consisting of $n$ block columns and $r$ block rows can be done in at most $O(n^2r^2\log q)$.
 
 \subsection{Comparison and Limitations}
 
 Unlike in the Schoof-like case, there is no dependence on the genericity of the choice of Drinfeld module; the algorithm only fails to return a result when a poor choice of projection is made. For cases other than $\gcd(n,r) = 1$, lemma (\ref{charindlem}) can be applied by directly by testing the linear independence of characters $\{ \phi_x^{u}\tau^{ni} \}_{0 \leq u \leq n(r-i)/r }^{1 \leq i < r}$, which can be done probabilistically using polynomial identity testing. 
+
+\section{Timings}
+
+The following tables gives the sample timings obtained from an implementation of algorithm \ref{schoof} in \textit{SageMath} over the base field $\F_q = GF(1327)$.
+
+\begin{center}
+\begin{tabular}{ | m{1.5cm}| m{1.4cm} | m{1.4cm} | m{1.5cm} | } 
+%\caption{A summary of the computational results}
+\hline
+ r = 21 & r = 43 & r = 87 &  r = 113  \\ 
+\hline
+ 109.791s &	431.819s & 1675.349s	 & 2765.568s\\
+\hline 
+\end{tabular}
+\end{center}
+\begin{table}[h!]
+  \centering
+  \caption{Test cases varying $r$. Here $m = 5$, $s = 2$, $n = 10$. }
+  \label{tab:table-sample}
+\end{table}
+
+\begin{center}
+\begin{tabular}{ | m{1cm} | m{1cm}| m{1cm} | m{1cm} | m{1cm} | m{1cm} | } 
+%\caption{A summary of the computational results}
+\hline
+ & $n = 10$ & $n = 20$ & $n = 30$ & $n = 40$ & $n = 50$  \\ 
+\hline
+$s = 1$ & 2.546s & 17.015s & 35.750s & 219.093s & 323.243s \\
+\hline 
+$s = 2$  & 2.0156s & 27.375s & 44.312s & 241.796s & 328.375s \\ 
+\hline
+\end{tabular}
+\end{center}
+\begin{table}[h!]
+  \centering
+  \caption{Timings for varied $n,s$. Here $r = 5$. }
+  \label{tab:table-sample}
+\end{table}
 
 
 
